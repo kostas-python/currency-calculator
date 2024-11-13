@@ -5,12 +5,19 @@ import { DataTypes, Model } from 'sequelize';
 class User extends Model {
   public username!: string;
   public password!: string;
+    id: any;
 }
 
 
 try {
   User.init(
+
     {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
       username: {
         type: DataTypes.STRING,
         allowNull: false,
