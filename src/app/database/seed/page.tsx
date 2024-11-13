@@ -13,7 +13,7 @@ const initialCurrencyRates = [
 ];
 
 
-async function seedCurrencies() {
+export async function seedCurrencies() {
   try {
     await sequelize.sync();
 
