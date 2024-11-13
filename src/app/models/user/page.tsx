@@ -1,13 +1,16 @@
-import sequelize from '@/app/database/data/page';
+import { sequelize } from '@/app/database/data/page';
 import { DataTypes, Model } from 'sequelize';
+
 
 
 class User extends Model {
   public username!: string;
   public password!: string;
-    id: any;
+  public id!: number;       // We define the 'id' property type as a number
 }
 
+
+// Initialize the 'User' model with Sequelize
 
 try {
   User.init(
@@ -50,6 +53,7 @@ try {
         },
       },
       set(value: string | number) {
+        
         // both strings and numbers should be stored as strings
         
         this.setDataValue('password', value.toString());
@@ -63,10 +67,11 @@ try {
 );
 
 } catch (error) {
+  
     // Catch any errors that occur during model initialization
 
     console.error('Error initializing User model:', error);
     
   }
 
-export default User;
+export default User ;
