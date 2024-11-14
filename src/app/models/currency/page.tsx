@@ -1,4 +1,4 @@
-import sequelize from '@/app/database/data/page';
+import { sequelize } from '@/app/database/data/page';
 import { DataTypes, Model } from 'sequelize';
 
 

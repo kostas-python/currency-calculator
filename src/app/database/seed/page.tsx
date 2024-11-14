@@ -4,12 +4,12 @@ import { sequelize } from "../data/page";
 // Endpoints 
 
 const initialCurrencyRates = [
-  { base: 'Euro', target: 'US Dollar', rate: 1.3764 },
-  { base: 'Euro', target: 'Swiss Franc', rate: 1.2079 },
-  { base: 'Euro', target: 'British Pound', rate: 0.8731 },
-  { base: 'US Dollar', target: 'JPY', rate: 76.7200 },
-  { base: 'Swiss Franc', target: 'US Dollar', rate: 1.1379 },
-  { base: 'British Pound', target: 'CAD', rate: 1.5648 },
+  { base: 'EUR', target: 'USD', rate: 1.3764 },
+  { base: 'EUR', target: 'CHF', rate: 1.2079 },
+  { base: 'EUR', target: 'GBP', rate: 0.8731 },
+  { base: 'USD', target: 'JPY', rate: 76.7200 },
+  { base: 'CHF', target: 'USD', rate: 1.1379 },
+  { base: 'GBP', target: 'CAD', rate: 1.5648 },
 ];
 
 
