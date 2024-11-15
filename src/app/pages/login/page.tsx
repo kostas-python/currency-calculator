@@ -1,29 +1,26 @@
-'use client'
+'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation'; // Correct import for the App Router
 import Header from "@/app/components/header";
 
-
 export default function LoginPage() {
-  // State to store form data and errors
+  const router = useRouter(); // Initialize the App Router's router
 
+  // State to store form data and errors
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-  
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
 
     // Clear previous errors
     setErrors({});
-    
 
     // Validate form fields
     const newErrors: { email?: string; password?: string } = {};
-    
 
     // Validate email
     if (!email) {
@@ -31,7 +28,6 @@ export default function LoginPage() {
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       newErrors.email = "Please enter a valid email address";
     }
-    
 
     // Validate password
     if (!password) {
@@ -40,17 +36,21 @@ export default function LoginPage() {
       newErrors.password = "Password must be at least 6 characters long";
     }
 
-
     // If there are errors, set them in state
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
 
-    
-    // Handle successful submission (you can replace this with your actual logic)
-    console.log("Form submitted:", { email, password });
+    // Simulate login logic
+    const loginSuccessful = email === "test@example.com" && password === "password123"; // Replace with actual API call
 
+    if (loginSuccessful) {
+      console.log("Login successful! Redirecting to dashboard...");
+      router.push('/dashboard'); // Redirect to the dashboard
+    } else {
+      setErrors({ email: "Invalid email or password" });
+    }
   };
 
   return (
@@ -67,7 +67,6 @@ export default function LoginPage() {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            
             {/* Email input */}
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
@@ -82,7 +81,9 @@ export default function LoginPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   autoComplete="email"
-                  className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 ${errors.email ? 'ring-red-500' : ''}`}
+                  className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 ${
+                    errors.email ? 'ring-red-500' : ''
+                  }`}
                 />
                 {/* Display error message if validation fails */}
                 {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
@@ -110,7 +111,9 @@ export default function LoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 ${errors.password ? 'ring-red-500' : ''}`}
+                  className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 ${
+                    errors.password ? 'ring-red-500' : ''
+                  }`}
                 />
                 {/* Display error message if validation fails */}
                 {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
@@ -132,4 +135,3 @@ export default function LoginPage() {
     </>
   );
 }
-
