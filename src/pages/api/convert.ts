@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-const rates: Record<string, number> = {
+
+// Centralized rates data (mock database, acting as in-memory storage for exchange rates)
+  
+let rates: Record<string, number> = {
   "USD-EUR": 0.84,
   "EUR-USD": 1.19,
   "USD-GBP": 0.75,
@@ -34,40 +37,80 @@ const rates: Record<string, number> = {
 };
 
 
-// Helper function to fetch exchange rate from rates
+// Helper function to fetch exchange rate
+// Supports both direct and inverse rates (e.g., USD-EUR and EUR-USD)
 function getExchangeRate(base: string, target: string): number | undefined {
-  const directRateKey = `${base}-${target}`;
-  const inverseRateKey = `${target}-${base}`;
-  
-  console.log(`Looking up rate for: ${base}-${target} or inverse ${target}-${base}`);
-
-  return rates[directRateKey] ?? (1 / rates[inverseRateKey]);
+  const directRateKey = `${base}-${target}`; // Key for direct conversion
+  const inverseRateKey = `${target}-${base}`; // Key for inverse conversion
+  return rates[directRateKey] ?? (1 / rates[inverseRateKey]); // Return direct rate or inverse if exists
 }
 
+// Main API handler function
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { base, target } = req.query;
+  const { method } = req; // Extract the HTTP method of the request
 
-  // Log the incoming request for debugging
-  console.log(`Received request: base=${base}, target=${target}`);
+  switch (method) {
+    case "GET": {
+      // Handle GET requests: return all rates as a JSON object
+      res.status(200).json(rates);
+      break;
+    }
+    case "POST": {
+      // Handle POST requests: add a new rate
+      const { pair, rate } = req.body; // Extract data from the request body
 
-  // Validate query parameters
-  if (!base || !target || typeof base !== 'string' || typeof target !== 'string') {
-    console.error("Invalid or missing base or target currency", { base, target });
-    return res.status(400).json({ error: "Invalid base or target currency" });
-  }
+      // Validate the request data
+      if (!pair || typeof rate !== "number") {
+        res.status(400).json({ error: "Invalid pair or rate" });
+        return;
+      }
 
-  // Get exchange rate (either direct or inverse)
-  const baseStr = base?.toUpperCase() ?? '';  // Default to empty string if undefined
-  const targetStr = target?.toUpperCase() ?? '';
+      // Add the new rate to the rates object
+      rates[pair] = rate;
 
-  const rate = getExchangeRate(baseStr, targetStr);
+      // Respond with the created rate
+      res.status(201).json({ pair, rate });
+      break;
+    }
+    case "PUT": {
+      // Handle PUT requests: update an existing rate
+      const { pair, rate } = req.body; // Extract data from the request body
 
-  if (rate !== undefined) {
-    console.log(`Returning exchange rate for ${baseStr}-${targetStr}: ${rate}`);
-    return res.status(200).json({ rate });
-  } else {
-    console.error(`Rate not found for ${baseStr}-${targetStr}`);
-    return res.status(404).json({ error: "Rate not found" });
+      // Validate the request data
+      if (!pair || typeof rate !== "number" || !rates[pair]) {
+        res.status(400).json({ error: "Invalid or non-existing pair" });
+        return;
+      }
+
+      // Update the rate in the rates object
+      rates[pair] = rate;
+
+      // Respond with the updated rate
+      res.status(200).json({ pair, rate });
+      break;
+    }
+    case "DELETE": {
+      // Handle DELETE requests: remove a rate
+      const { pair } = req.query; // Extract the pair from the query string
+
+      // Validate the pair parameter
+      if (typeof pair !== "string" || !rates[pair]) {
+        res.status(400).json({ error: "Invalid or non-existing pair" });
+        return;
+      }
+
+      // Delete the rate from the rates object
+      delete rates[pair];
+
+      // Respond with no content
+      res.status(204).end();
+      break;
+    }
+    default: {
+      // Handle unsupported methods
+      res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]); // Inform the client about supported methods
+      res.status(405).end(`Method ${method} Not Allowed`); // Respond with method not allowed
+    }
   }
 }
 
