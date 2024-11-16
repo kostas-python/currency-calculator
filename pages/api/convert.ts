@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
+
 // Centralized rates data (mock database, acting as in-memory storage for exchange rates)
 let rates: Record<string, number> = {
   "USD-EUR": 0.84,
@@ -34,15 +35,18 @@ let rates: Record<string, number> = {
   "JPY-CAD": 0.0163
 };
 
+
 // Helper function to fetch exchange rate
 // Supports both direct and inverse rates (e.g., USD-EUR and EUR-USD)
+
 function getExchangeRate(base: string, target: string): number | undefined {
-  const directRateKey = `${base}-${target}`; // Key for direct conversion
-  const inverseRateKey = `${target}-${base}`; // Key for inverse conversion
-  return rates[directRateKey] ?? (1 / rates[inverseRateKey]); // Return direct rate or inverse if exists
+  const directRateKey = `${base}-${target}`;              // Key for direct conversion
+  const inverseRateKey = `${target}-${base}`;            // Key for inverse conversion
+  return rates[directRateKey] ?? (1 / rates[inverseRateKey]);   // Return direct rate or inverse if exists
 }
 
 // Main API handler function
+
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const { method } = req; // Extract the HTTP method of the request
 
@@ -57,8 +61,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return;
       }
 
+
       // Get the exchange rate using the helper function
       const rate = getExchangeRate(base, target);
+
 
       // If the rate is found, return it, otherwise send an error
       if (rate !== undefined) {
@@ -69,8 +75,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       break;
     }
     case "POST": {
+
       // Handle POST requests: add a new rate
       const { pair, rate } = req.body; // Extract data from the request body
+
 
       // Validate the request data
       if (!pair || typeof rate !== "number") {
@@ -81,13 +89,16 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       // Add the new rate to the rates object
       rates[pair] = rate;
 
+
       // Respond with the created rate
       res.status(201).json({ pair, rate });
       break;
     }
     case "PUT": {
+
       // Handle PUT requests: update an existing rate
-      const { pair, rate } = req.body; // Extract data from the request body
+      const { pair, rate } = req.body;                // Extract data from the request body
+
 
       // Validate the request data
       if (!pair || typeof rate !== "number" || !rates[pair]) {
@@ -95,16 +106,19 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return;
       }
 
+
       // Update the rate in the rates object
       rates[pair] = rate;
+
 
       // Respond with the updated rate
       res.status(200).json({ pair, rate });
       break;
     }
     case "DELETE": {
+
       // Handle DELETE requests: remove a rate
-      const { pair } = req.query; // Extract the pair from the query string
+      const { pair } = req.query;                // Extract the pair from the query string
 
       // Validate the pair parameter
       if (typeof pair !== "string" || !rates[pair]) {
@@ -112,19 +126,21 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         return;
       }
 
+
       // Delete the rate from the rates object
       delete rates[pair];
+
 
       // Respond with no content
       res.status(204).end();
       break;
     }
     default: {
+      
       // Handle unsupported methods
       res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]); // Inform the client about supported methods
       res.status(405).end(`Method ${method} Not Allowed`); // Respond with method not allowed
     }
   }
 }
-
 

@@ -13,7 +13,7 @@ const CurrencyConverter: React.FC = () => {
 
   const [currencyOne, setCurrencyOne] = useState("USD");           // Default to USD for currencyOne
   const [currencyTwo, setCurrencyTwo] = useState("EUR");          // Default to EUR for currencyTwo
-  const [amountOne, setAmountOne] = useState(2);                 // Default to 1 for the amount of currencyOne
+  const [amountOne, setAmountOne] = useState(1);                 // Default to 1 for the amount of currencyOne
   const [amountTwo, setAmountTwo] = useState(0);                // Default to 0 for the amount of currencyTwo
   const [rate, setRate] = useState<number | null>(0.84);       // Default to 0.84 as the exchange rate
 
@@ -26,35 +26,35 @@ const CurrencyConverter: React.FC = () => {
         setAmountTwo(amountOne);  // Set amountTwo to the same value as amountOne
         return;  // No need to fetch from the API
       }
-
+  
       // Fetch conversion rate from the API endpoint
       const response = await fetch(`/api/convert?base=${currencyOne}&target=${currencyTwo}`);
-
+  
       // Check if the response is OK (status code 200)
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.statusText}`);
       }
-
+  
       // Parse the JSON data from the response
       const data = await response.json();
-      console.log("Received data from API:", data);
-
-      if (data.rate) {
+  
+      if (data?.rate) {
         setRate(data.rate);
         setAmountTwo(amountOne * data.rate);
-
+  
         // Calculate the amount in currencyTwo based on amountOne and the rate
         const calculatedAmount = amountOne * data.rate;
-
+  
         // Set the calculated amount for currencyTwo, ensuring it's not NaN
         setAmountTwo(isNaN(calculatedAmount) ? 0 : calculatedAmount);
       } else {
-        console.error("Rate data is missing or invalid");
+        console.error("Rate data is missing or invalid", data);
       }
     } catch (error) {
       console.error("Failed to fetch the conversion rate:", error);
     }
   };
+  
 
   // Trigger fetching of the conversion rate whenever currencyOne, currencyTwo, or amountOne changes
   useEffect(() => {
@@ -62,7 +62,7 @@ const CurrencyConverter: React.FC = () => {
   }, [currencyOne, currencyTwo, amountOne]);
 
 
-  // Reset amountOne to 1 whenever currencyOne or currencyTwo changes
+  {/**/}// Reset amountOne to 1 whenever currencyOne or currencyTwo changes
   useEffect(() => {
     setAmountOne(1);  // Reset amount to 1 when currencies are swapped
   }, [currencyOne, currencyTwo]);

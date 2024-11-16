@@ -61,8 +61,8 @@ try {
     },
   },
   {
-    sequelize,
-    modelName: 'User',
+    sequelize,      // Links the model to the sequelize instance for database interaction
+    modelName: 'User', // Name of the model, which is used when referring to the table in Sequelize
   }
 );
 

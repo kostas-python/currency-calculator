@@ -10,7 +10,6 @@ class Currency extends Model {
   public rate!: number;
 }
 
-
 // Initializing the Currency model with the required fields and their configurations
 
 Currency.init(
@@ -37,7 +36,7 @@ Currency.init(
     },
   },
   {
-    sequelize,   // Links the model to the sequelize instance for database interaction
+    sequelize,            // Links the model to the sequelize instance for database interaction
     modelName: 'Currency',  // Name of the model, which is used when referring to the table in Sequelize
   }
 );

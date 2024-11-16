@@ -76,13 +76,15 @@ export default function DashboardPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedRateData),
       });
-  
+
       if (response.ok) {
+        // Update the rates in the local state after successful API response
         const updatedRates = [...rates];
         updatedRates[editIndex].rate = parseFloat(newRate);
-        setRates(updatedRates);
-        setEditIndex(null);
-        setNewRate("");
+        setRates(updatedRates); // Refresh the rates in the dashboard UI
+
+        setEditIndex(null); // Exit edit mode
+        setNewRate(""); // Clear the input field
       }
     }
   };
@@ -148,6 +150,8 @@ export default function DashboardPage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 font-poppins">
         <div className="bg-gray-700 p-8 rounded-lg shadow-lg sm:w-full sm:max-w-[800px]">
           <h1 className="text-2xl font-bold text-center mb-6">Dashboard Panel</h1>
+          
+          {/* Main Dashboard panel tables */}
           <table className="w-full table-auto border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-500">
@@ -166,7 +170,7 @@ export default function DashboardPage() {
                         type="number"
                         value={newRate}
                         onChange={(e) => setNewRate(e.target.value)}
-                        className="border rounded p-1 w-20 text-center"
+                        className="border rounded p-1 w-20 text-black text-center"
                       />
                     ) : (
                       rate.rate.toFixed(4)
