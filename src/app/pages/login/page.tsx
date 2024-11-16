@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import bcrypt from 'bcryptjs';                 // bcrypt for password comparison
+import bcrypt from 'bcryptjs'; 
 import Header from "@/app/components/header";
 
 
@@ -19,16 +19,13 @@ export default function LoginPage() {
 
   // Admin credentials (hashed password for 'password')
   const adminCredentials = {
-    email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || "",
-    passwordHash: process.env.NEXT_PUBLIC_ADMIN_PASSWORD_HASH || "",
+    email: "admin@example.com",
+    passwordHash: "$2a$12$Teb8wOTF2rL6dDjfFJMRcOM84S0Tco43c2xovlAEqjDm1Jmz2f/3i" // Hashed password for "proconadmin13"
   };
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Admin Email:", process.env.NEXT_PUBLIC_ADMIN_EMAIL);
-    console.log("Admin Password Hash:", process.env.NEXT_PUBLIC_ADMIN_PASSWORD_HASH);
-
 
     // Clear previous errors
     setErrors({});
@@ -161,4 +158,3 @@ export default function LoginPage() {
     </>
   );
 }
-

@@ -1,8 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 
-
 // Centralized rates data (mock database, acting as in-memory storage for exchange rates)
-  
 let rates: Record<string, number> = {
   "USD-EUR": 0.84,
   "EUR-USD": 1.19,
@@ -36,7 +34,6 @@ let rates: Record<string, number> = {
   "JPY-CAD": 0.0163
 };
 
-
 // Helper function to fetch exchange rate
 // Supports both direct and inverse rates (e.g., USD-EUR and EUR-USD)
 function getExchangeRate(base: string, target: string): number | undefined {
@@ -51,8 +48,24 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 
   switch (method) {
     case "GET": {
-      // Handle GET requests: return all rates as a JSON object
-      res.status(200).json(rates);
+      // Extract 'base' and 'target' from the query parameters
+      const { base, target } = req.query;
+
+      // Validate query parameters
+      if (!base || !target || typeof base !== 'string' || typeof target !== 'string') {
+        res.status(400).json({ error: "Missing or invalid 'base' or 'target' parameters" });
+        return;
+      }
+
+      // Get the exchange rate using the helper function
+      const rate = getExchangeRate(base, target);
+
+      // If the rate is found, return it, otherwise send an error
+      if (rate !== undefined) {
+        res.status(200).json({ rate });
+      } else {
+        res.status(404).json({ error: "Exchange rate not found for the given pair" });
+      }
       break;
     }
     case "POST": {
@@ -113,4 +126,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     }
   }
 }
+
 

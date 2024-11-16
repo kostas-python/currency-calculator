@@ -13,41 +13,41 @@ const CurrencyConverter: React.FC = () => {
 
   const [currencyOne, setCurrencyOne] = useState("USD");           // Default to USD for currencyOne
   const [currencyTwo, setCurrencyTwo] = useState("EUR");          // Default to EUR for currencyTwo
-  const [amountOne, setAmountOne] = useState(1);                 // Default to 1 for the amount of currencyOne
+  const [amountOne, setAmountOne] = useState(2);                 // Default to 1 for the amount of currencyOne
   const [amountTwo, setAmountTwo] = useState(0);                // Default to 0 for the amount of currencyTwo
   const [rate, setRate] = useState<number | null>(0.84);       // Default to 0.84 as the exchange rate
 
   // Function to fetch the exchange rate from the API
-
   const fetchRate = async () => {
     try {
+      // If currencies are the same, directly set rate to 1
+      if (currencyOne === currencyTwo) {
+        setRate(1);
+        setAmountTwo(amountOne);  // Set amountTwo to the same value as amountOne
+        return;  // No need to fetch from the API
+      }
 
       // Fetch conversion rate from the API endpoint
       const response = await fetch(`/api/convert?base=${currencyOne}&target=${currencyTwo}`);
-      
 
       // Check if the response is OK (status code 200)
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.statusText}`);
       }
-      
-      
+
       // Parse the JSON data from the response
       const data = await response.json();
       console.log("Received data from API:", data);
-
 
       if (data.rate) {
         setRate(data.rate);
         setAmountTwo(amountOne * data.rate);
 
-
         // Calculate the amount in currencyTwo based on amountOne and the rate
         const calculatedAmount = amountOne * data.rate;
 
-
         // Set the calculated amount for currencyTwo, ensuring it's not NaN
-        setAmountTwo(isNaN(calculatedAmount) ? 0 : calculatedAmount); 
+        setAmountTwo(isNaN(calculatedAmount) ? 0 : calculatedAmount);
       } else {
         console.error("Rate data is missing or invalid");
       }
@@ -61,6 +61,13 @@ const CurrencyConverter: React.FC = () => {
     fetchRate();
   }, [currencyOne, currencyTwo, amountOne]);
 
+
+  // Reset amountOne to 1 whenever currencyOne or currencyTwo changes
+  useEffect(() => {
+    setAmountOne(1);  // Reset amount to 1 when currencies are swapped
+  }, [currencyOne, currencyTwo]);
+
+
   // Swap the selected currencies and update amounts and rates accordingly
   const handleSwap = () => {
     setCurrencyOne(currencyTwo);                          // Set currencyOne to currencyTwo
@@ -72,17 +79,25 @@ const CurrencyConverter: React.FC = () => {
 
 
   // Handle changes in the amount of currencyOne input field
-  const handleAmountOneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);  // Convert the input to a number
-    setAmountOne(isNaN(value) ? 0 : value);    // If value is NaN, set it to 0
-  };
 
-  
-  // Handle changes in the amount of currencyTwo input field
-  const handleAmountTwoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);  // Convert the input to a number
-    setAmountTwo(isNaN(value) ? 0 : value);    // If value is NaN, set it to 0
-  };
+const handleAmountOneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value; // Get the value from the input field as a string
+  const numericValue = parseFloat(value);  // Convert it to a number
+
+  // Set amountOne to the new value, ensuring it's a valid number
+  setAmountOne(isNaN(numericValue) ? 0 : numericValue);
+};
+
+// Handle changes in the amount of currencyTwo input field
+
+const handleAmountTwoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const value = e.target.value; // Get the value from the input field as a string
+  const numericValue = parseFloat(value);  // Convert it to a number
+
+  // Set amountTwo to the new value, ensuring it's a valid number
+  setAmountTwo(isNaN(numericValue) ? 0 : numericValue);
+};
+
 
   return (
     <>
@@ -104,9 +119,9 @@ const CurrencyConverter: React.FC = () => {
             </select>
             <input
               type="number"
-              value={isNaN(amountOne) ? 0 : amountOne}  // Ensure valid number for amountOne
-              onChange={handleAmountOneChange}  // Handle input change for amountOne
-              placeholder="0"
+              value={amountOne} // Controlled input for amountOne
+              onChange={handleAmountOneChange} // Update the amountOne state
+              placeholder="Amount in Currency 1"
               className="ml-4 border border-gray-300 py-3 rounded w-24 focus:outline-none text-black"
             />
           </div>
@@ -144,9 +159,9 @@ const CurrencyConverter: React.FC = () => {
             </select>
             <input
               type="number"
-              value={isNaN(amountTwo) ? 0 : amountTwo}     // Ensure valid number for amountTwo
-              onChange={handleAmountTwoChange}            // Handle input change for amountTwo
-              placeholder="0"
+              value={amountTwo} // Controlled input for amountTwo
+              onChange={handleAmountTwoChange} // Update the amountTwo state
+              placeholder="Amount in Currency 2"
               className="ml-4 border border-gray-300 py-3 rounded w-24 focus:outline-none text-black"
             />
           </div>
