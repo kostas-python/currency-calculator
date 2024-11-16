@@ -1,20 +1,34 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // Correct import for the App Router
+import { useRouter } from 'next/navigation';
+import bcrypt from 'bcryptjs';                 // bcrypt for password comparison
 import Header from "@/app/components/header";
 
+
 export default function LoginPage() {
-  const router = useRouter(); // Initialize the App Router's router
+  // Initialize the App Router's router
+  const router = useRouter();
+
 
   // State to store form data and errors
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
+
+  // Admin credentials (hashed password for 'password')
+  const adminCredentials = {
+    email: process.env.NEXT_PUBLIC_ADMIN_EMAIL || "",
+    passwordHash: process.env.NEXT_PUBLIC_ADMIN_PASSWORD_HASH || "",
+  };
+
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log("Admin Email:", process.env.NEXT_PUBLIC_ADMIN_EMAIL);
+    console.log("Admin Password Hash:", process.env.NEXT_PUBLIC_ADMIN_PASSWORD_HASH);
+
 
     // Clear previous errors
     setErrors({});
@@ -42,12 +56,21 @@ export default function LoginPage() {
       return;
     }
 
-    // Simulate login logic
-    const loginSuccessful = email === "test@example.com" && password === "password123"; // Replace with actual API call
+    // Simulate login logic with the hashed password
+    if (email === adminCredentials.email) {
+      const isPasswordValid = bcrypt.compareSync(password, adminCredentials.passwordHash);
 
-    if (loginSuccessful) {
-      console.log("Login successful! Redirecting to dashboard...");
-      router.push('/dashboard'); // Redirect to the dashboard
+      if (isPasswordValid) {
+        console.log("Login successful! Redirecting to dashboard...");
+        
+        // Store login state in localStorage
+        localStorage.setItem("isLoggedIn", "true");
+
+        // Redirect to the dashboard page
+        router.push('/pages/dashboard');
+      } else {
+        setErrors({ email: "Invalid email or password" });
+      }
     } else {
       setErrors({ email: "Invalid email or password" });
     }
@@ -67,6 +90,7 @@ export default function LoginPage() {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            
             {/* Email input */}
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
@@ -85,6 +109,7 @@ export default function LoginPage() {
                     errors.email ? 'ring-red-500' : ''
                   }`}
                 />
+
                 {/* Display error message if validation fails */}
                 {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
               </div>
@@ -115,6 +140,7 @@ export default function LoginPage() {
                     errors.password ? 'ring-red-500' : ''
                   }`}
                 />
+                
                 {/* Display error message if validation fails */}
                 {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
               </div>
@@ -135,3 +161,4 @@ export default function LoginPage() {
     </>
   );
 }
+
