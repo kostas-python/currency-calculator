@@ -170,7 +170,7 @@ export default function DashboardPage() {
       <Header /> {/*Header component*/}
 
       {/*Dashboard Panel section*/}
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 font-poppins">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/image4.jpg')] p-6 font-poppins">
         <div className="bg-gray-700 p-8 rounded-lg shadow-lg sm:w-full sm:max-w-[800px]">
           <h1 className="text-2xl font-bold text-center mb-6">Dashboard Panel</h1>
           <table className="w-full table-auto border-collapse border border-gray-300">
