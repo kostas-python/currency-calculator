@@ -123,7 +123,7 @@ const CurrencyConverter: React.FC = () => {
   return (
     <>
       <Header />
-      <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/image3.jpg')] bg-left p-6 font-poppins">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/image3.avif')] object-left p-6 font-poppins">
         <div className="bg-[url('/image2.jpeg')] bg-center p-8 rounded-lg shadow-lg sm:mx-auto sm:w-full sm:max-w-[600px] h-[500px]">
 
           {/* Currency 1 and amount input */}
