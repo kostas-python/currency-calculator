@@ -4,10 +4,12 @@ import Flag from "react-world-flags";
 import Header from "./components/header";
 import { useEffect, useState } from 'react';
 
+
 // List of available currencies
 const currencies = [
   "USD", "EUR", "GBP", "CHF", "JPY", "CAD",
 ];
+
 
 // Map currency codes to flag country codes
 const currencyToFlagCode: { [key: string]: string } = {
@@ -121,11 +123,13 @@ const CurrencyConverter: React.FC = () => {
   return (
     <>
       <Header />
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 font-poppins">
-        <div className="bg-gray-400 p-8 rounded-lg shadow-lg sm:mx-auto sm:w-full sm:max-w-[600px] h-[500px]">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[url('/image3.jpg')] bg-left p-6 font-poppins">
+        <div className="bg-[url('/image2.jpeg')] bg-center p-8 rounded-lg shadow-lg sm:mx-auto sm:w-full sm:max-w-[600px] h-[500px]">
+
           {/* Currency 1 and amount input */}
           <div className="flex items-center justify-between py-12">
             <div className="flex items-center">
+
               {/* Flag next to currency */}
               <Flag
                 code={currencyToFlagCode[currencyOne]}
@@ -159,7 +163,7 @@ const CurrencyConverter: React.FC = () => {
           <div className="flex items-center justify-center py-4">
             <button
               onClick={handleSwap}  // Swap currencies when clicked
-              className="bg-gray-500 text-white p-2 mr-4 rounded-lg shadow-md hover:bg-gray-600"
+              className="bg-red-500 text-white p-2 mr-4 rounded-lg shadow-md hover:bg-gray-600"
             >
               Swap
             </button>
