@@ -77,7 +77,7 @@ export default function LoginPage() {
     <>
       <Header />
 
-      <div className="flex min-h-full h-screen bg-white flex-1 flex-col justify-top px-6 py-12 lg:px-8">
+      <div className="flex min-h-full h-screen bg-gradient-to-b from-gray-100 via-gray-200 to-gray-500 flex-1 flex-col justify-top px-6 py-12 lg:px-8">
         <div className="mt-60 sm:mx-auto sm:w-full sm:max-w-sm">
           <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
             Sign in to your account
