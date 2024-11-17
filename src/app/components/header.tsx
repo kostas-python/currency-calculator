@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import Link from 'next/link'
 
 
 // navigation menu
@@ -17,9 +18,9 @@ export default function Header() {
     <header className="bg-gray-200">
       <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
         <div className="text-black font-bold flex lg:flex-1">
-          <a href="/" className="-m-1.5 p-1.5">
+          <Link href="/" className="-m-1.5 p-1.5">
             <h1>PROCON CURRENCY CALCULATOR</h1>
-          </a>
+          </Link>
         </div>
         <div className="flex lg:hidden">
           <button

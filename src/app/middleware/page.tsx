@@ -29,7 +29,7 @@ export function authMiddleware(req: NextRequest) {
     // If the token is valid, allow the request to proceed
 
     return NextResponse.next();
-  } catch (err) {
+  } catch {
 
     // If the token is invalid or expired, return a 401 Unauthorized response
 

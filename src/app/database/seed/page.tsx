@@ -1,33 +1,21 @@
-import Currency from "@/app/models/currency/page";
 import { sequelize } from "../data/page";
+import Currency from "@/app/models/currency/page";
 
-// Endpoints 
-
-const initialCurrencyRates = [
-  { base: 'EUR', target: 'USD', rate: 1.3764 },
-  { base: 'EUR', target: 'CHF', rate: 1.2079 },
-  { base: 'EUR', target: 'GBP', rate: 0.8731 },
-  { base: 'USD', target: 'JPY', rate: 76.7200 },
-  { base: 'CHF', target: 'USD', rate: 1.1379 },
-  { base: 'GBP', target: 'CAD', rate: 1.5648 },
-];
-
+// Remove the initialCurrencyRates array since it's no longer needed
 
 export async function seedCurrencies() {
   try {
-    await sequelize.sync();
+    await sequelize.sync(); // Ensure the tables are created
 
-    // Check if the currency table is empty, and if so, insert the initial rates
-
+    // Optional: Skip seeding logic if you are managing rates dynamically
     const count = await Currency.count();
     if (count === 0) {
-      await Currency.bulkCreate(initialCurrencyRates);
-      console.log('Initial currency rates added to the database.');
+      console.log('Currency rates are not being seeded. They are managed dynamically.');
     } else {
       console.log('Currency rates already exist in the database.');
     }
   } catch (error) {
-    console.error('Error seeding currency data:', error);
+    console.error('Error during database initialization:', error);
   }
 }
 

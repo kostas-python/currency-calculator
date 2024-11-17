@@ -4,7 +4,9 @@ import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server'; 
 
 
-// Register a new user
+{/* 
+  ******* Register a new user for future if needed ******
+
 export async function POST(req: Request) {
   // Extract username and password from the request body
   const { username, password } = await req.json();
@@ -31,7 +33,7 @@ export async function POST(req: Request) {
     }
   }
 }
-
+*/}
 
 // Login and return a JWT
 export async function POST_LOGIN(req: Request) {

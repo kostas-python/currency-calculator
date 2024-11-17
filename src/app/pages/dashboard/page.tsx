@@ -1,187 +1,209 @@
-'use client'
+"use client";
 
-import Header from "@/app/components/header";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-
-
-// Sample initial rates data
-
-const initialRates = [
-  { pair: "USD-JPY", rate: 76.7200 },
-  { pair: "EUR-USD", rate: 0.84 },
-  { pair: "EUR-GBP", rate: 0.8731 },
-  { pair: "CHF-USD", rate: 1.1379 },
-  { pair: "GBP-CAD", rate: 1.5648 },
-];
+import Header from "@/app/components/header"; 
+import { useRouter } from "next/navigation";     // Router for navigation
+import { useEffect, useState } from "react";    // React hooks for state management and side effects
 
 
- // CRUD
 
 export default function DashboardPage() {
-  const [rates, setRates] = useState(initialRates);
-  const [editIndex, setEditIndex] = useState<number | null>(null);   // edit rates
-  const [newRate, setNewRate] = useState("");                       //add new rate
-  const [newPair, setNewPair] = useState(""); // For creating new conversions
-  
-  // router for redirecting to login page when click logout 
-
-  const router = useRouter();
+  // State to store exchange rates (array of objects with pair and rate)
+  const [rates, setRates] = useState<{ pair: string; rate: number }[]>([]);
 
 
-  // connection with API to fetch rates and dynamically update them from front end
+  // State for handling editing a rate (stores index of the rate being edited)
+  const [editIndex, setEditIndex] = useState<number | null>(null);
 
+
+  // State for new rate and pair input fields
+  const [newRate, setNewRate] = useState("");
+  const [newPair, setNewPair] = useState("");
+
+  const router = useRouter();       // Next.js router instance for navigation
+
+
+
+  // Fetch rates from the backend on component mount
   useEffect(() => {
     const fetchRates = async () => {
       try {
-        const response = await fetch("/api/convert", { method: "GET" });
+        const response = await fetch("/api/convert", { method: "GET" }); // Make a GET request to the backend
         if (!response.ok) {
           throw new Error("Failed to fetch rates");
         }
-  
-        const data: { pair: string; rate: number }[] = await response.json();
-        // Ensure data integrity
-        const validatedData = data.map((item) => ({
-          pair: item.pair,
-          rate: typeof item.rate === "number" ? item.rate : 0, // Default to 0 if rate is not a number
-        }));
-  
-        setRates(validatedData); // Set state with validated data
+        const data: { pair: string; rate: number }[] = await response.json(); // Parse response
+        setRates(data);            // Update rates state with fetched data
       } catch (error) {
-        console.error("Error fetching rates:", error);
+        console.error("Error fetching rates:", error); // Log errors
       }
     };
-  
-    fetchRates();
-  }, []);
-  
-  
+
+    fetchRates();          // Trigger fetch on component load
+  }, []);                 // Empty dependency array ensures this runs only once
 
 
-  // Handle edit mode
 
+  // Handle edit button click
   const handleEdit = (index: number) => {
-    setEditIndex(index);
-    setNewRate(rates[index].rate.toString());
+    setEditIndex(index);                         // Set the index of the rate being edited
+    setNewRate(rates[index].rate.toString());   // Prefill the input with the existing rate
   };
 
 
-  // Handle rate update
 
+  // Handle update when saving an edited rate
   const handleUpdate = async () => {
-    if (editIndex !== null) {
-      const updatedRateData = { pair: rates[editIndex].pair, rate: parseFloat(newRate) };
+    if (editIndex === null) return;      // Do nothing if no rate is being edited
+
+    try {
+      const updatedRateData = { pair: rates[editIndex].pair, rate: parseFloat(newRate) }; // Prepare updated rate
+
       const response = await fetch("/api/convert", {
-        method: "PUT",
+        method: "PUT", // PUT request to update the rate
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedRateData),
+        body: JSON.stringify(updatedRateData), // Send updated rate as JSON
       });
 
-      if (response.ok) {
-        // Update the rates in the local state after successful API response
-        const updatedRates = [...rates];
-        updatedRates[editIndex].rate = parseFloat(newRate);
-        setRates(updatedRates); // Refresh the rates in the dashboard UI
+      if (!response.ok) {
+        throw new Error("Failed to update the rate");
+      }
 
-        setEditIndex(null); // Exit edit mode
-        setNewRate(""); // Clear the input field
+      // Fetch updated rates from backend to reflect changes
+      const updatedRates = await fetchRatesFromBackend();
+      setRates(updatedRates);                      // Update local state with the latest data
+      setEditIndex(null);                         // Clear editing state
+      setNewRate("");                            // Clear input field
+    } catch (error) {
+      console.error("Error updating rate:", error);     // Log errors
+      alert("Failed to update the rate.");             // Show error to the user
+    }
+  };
+
+
+
+  // Fetch updated rates from the backend
+  const fetchRatesFromBackend = async () => {
+    try {
+      const response = await fetch("/api/convert", { method: "GET" });
+      if (!response.ok) {
+        throw new Error("Failed to fetch rates");
+      }
+      return await response.json();          // Return the fetched rates
+    } catch (error) {
+      console.error("Error fetching rates from backend:", error);
+      return rates;                       // Return current rates as fallback
+    }
+  };
+
+
+
+  // Cancel editing a rate
+  const handleCancel = () => {
+    setEditIndex(null); // Reset editing state
+    setNewRate(""); // Clear input field
+  };
+
+
+
+  // Handle deletion of a rate
+  const handleDelete = async (index: number) => {
+    try {
+      const pairToDelete = rates[index].pair;        // Get the pair to delete
+
+      const response = await fetch(`/api/convert?pair=${pairToDelete}`, { method: "DELETE" }); // DELETE request
+
+      if (!response.ok) {
+        throw new Error("Failed to delete rate");
+      }
+
+      // Fetch updated rates after deletion
+      const updatedRates = await fetchRatesFromBackend();
+      setRates(updatedRates); // Update local state
+    } catch (error) {
+      console.error("Error deleting rate:", error);            // Log errors
+      alert("Failed to delete rate.");                        // Show error to the user
+    }
+  };
+
+
+
+  // Handle adding a new rate
+  const handleAdd = async () => {
+    if (newPair && newRate) {
+      try {
+        const newRateData = { pair: newPair.toUpperCase(), rate: parseFloat(newRate) }; // Prepare new rate
+
+        const response = await fetch("/api/convert", {
+          method: "POST",                                 // POST request to add the rate
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newRateData),             // Send new rate as JSON
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to add new rate");
+        }
+
+        // Fetch updated rates after adding the new rate
+        const updatedRates = await fetchRatesFromBackend();
+        setRates(updatedRates);                             // Update local state
+        setNewPair("");                                    // Clear input field
+        setNewRate("");                                   // Clear input field
+      } catch (error) {
+        console.error("Error adding new rate:", error);    // Log errors
+        alert("Failed to add new rate.");                 // Show error to the user
       }
     }
   };
+
+
   
-
-
-  // Handle cancel edit
-  
-  const handleCancel = () => {
-    setEditIndex(null);
-    setNewRate("");
-  };
-
-
-  // Handle logout (placeholder)
-
+  // Handle logout
   const handleLogout = () => {
-    alert("Logged out!");
-
-    // Redirect to login page 
-    router.push("/pages/login");
+    alert("Logged out!");          // Notify user
+    router.push("/pages/login"); // Redirect to login page
   };
 
 
-    // Handle delete (delete option)
-
-    const handleDelete = async (index: number) => {
-        const pairToDelete = rates[index].pair;
-        const response = await fetch(`/api/convert?pair=${pairToDelete}`, { method: "DELETE" });
-      
-        if (response.ok) {
-          setRates(rates.filter((_, i) => i !== index));
-        }
-      };
-      
-
-
-    // Handle add (add option) 
-    
-    const handleAdd = async () => {
-        if (newPair && newRate) {
-          const newRateData = { pair: newPair.toUpperCase(), rate: parseFloat(newRate) };
-          const response = await fetch("/api/convert", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newRateData),
-          });
-      
-          if (response.ok) {
-            setRates([...rates, newRateData]);
-            setNewPair("");
-            setNewRate("");
-          }
-        }
-    };
-      
 
   return (
     <>
-    <Header />
+      <Header /> {/*Header component*/}
 
-    {/* Main Dashboard panel */}
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 font-poppins">
+      {/*Dashboard Panel section*/}
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-6 font-poppins">
         <div className="bg-gray-700 p-8 rounded-lg shadow-lg sm:w-full sm:max-w-[800px]">
           <h1 className="text-2xl font-bold text-center mb-6">Dashboard Panel</h1>
-          
-          {/* Main Dashboard panel tables */}
           <table className="w-full table-auto border-collapse border border-gray-300">
             <thead>
               <tr className="bg-gray-500">
-                <th className="border border-gray-300 px-4 py-2">Currency Pair</th>
-                <th className="border border-gray-300 px-4 py-2">Rate</th>
-                <th className="border border-gray-300 px-4 py-2">Actions</th>
+                <th className="border px-4 py-2">Currency Pair</th>
+                <th className="border px-4 py-2">Rate</th>
+                <th className="border px-4 py-2">Actions</th>
               </tr>
             </thead>
             <tbody>
               {rates.map((rate, index) => (
                 <tr key={rate.pair} className="text-center">
-                  <td className="border border-gray-300 px-4 py-2">{rate.pair}</td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border px-4 py-2">{rate.pair}</td>
+                  <td className="border px-4 py-2">
                     {editIndex === index ? (
                       <input
                         type="number"
                         value={newRate}
                         onChange={(e) => setNewRate(e.target.value)}
-                        className="border rounded p-1 w-20 text-black text-center"
+                        className="border rounded p-1 w-20 text-black"
                       />
                     ) : (
                       rate.rate.toFixed(4)
                     )}
                   </td>
-                  <td className="border border-gray-300 px-4 py-2">
+                  <td className="border px-4 py-2">
                     {editIndex === index ? (
                       <>
                         <button
                           onClick={handleUpdate}
-                          className="bg-green-500 text-white px-2 py-1 rounded mr-2"
+                          className="bg-green-500 text-white px-2 py-1 rounded"
+                          
                         >
                           Save
                         </button>
@@ -196,13 +218,14 @@ export default function DashboardPage() {
                       <>
                         <button
                           onClick={() => handleEdit(index)}
-                          className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                          className="bg-blue-500 text-white px-2 py-1 rounded"
                         >
                           Edit
                         </button>
                         <button
                           onClick={() => handleDelete(index)}
                           className="bg-red-500 text-white px-2 py-1 rounded"
+                          
                         >
                           Delete
                         </button>
@@ -214,37 +237,38 @@ export default function DashboardPage() {
             </tbody>
           </table>
 
-          {/* Add New Conversion section */}
-
+          {/*Add new conversion Panel section*/}
           <div className="mt-6">
             <h2 className="text-xl font-bold text-center mb-4">Add New Conversion</h2>
-            <div className="flex text-black justify-between items-center space-x-4">
+            <div className="flex justify-between space-x-4">
               <input
                 type="text"
                 placeholder="Currency Pair (e.g., USD-EUR)"
                 value={newPair}
                 onChange={(e) => setNewPair(e.target.value)}
-                className="border rounded p-2 w-full"
+                className="border text-black rounded p-2 w-full"
               />
               <input
                 type="number"
                 placeholder="Rate"
                 value={newRate}
                 onChange={(e) => setNewRate(e.target.value)}
-                className="border rounded p-2 w-full"
+                className="border rounded text-black p-2 w-full"
               />
               <button
                 onClick={handleAdd}
-                className="bg-green-500 text-white px-4 py-2 rounded shadow-lg hover:bg-green-600"
+                className="bg-green-500 text-white px-4 py-2 rounded shadow-lg"
+                
               >
                 Add
               </button>
             </div>
           </div>
+
           <div className="mt-6 text-center">
             <button
               onClick={handleLogout}
-              className="bg-red-500 text-white px-4 py-2 rounded shadow-lg hover:bg-red-600"
+              className="bg-red-500 text-white px-4 py-2 rounded shadow-lg"
             >
               Logout
             </button>
