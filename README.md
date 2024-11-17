@@ -55,6 +55,7 @@ The Currency Calculator application consists of two main components:
 - **Authentication**: JSON Web Tokens (JWT)
 - **Environment Variables**: `dotenv` for managing secrets like `JWT_SECRET`.
 
+
 ### Frontend
 - **React** 
 - **Styling**: Tailwind CSS/
@@ -71,4 +72,6 @@ The Currency Calculator application consists of two main components:
    git clone <repository-url>
    cd currency-calculator-api
 
+### Jest testing
+- **jest test**
 
