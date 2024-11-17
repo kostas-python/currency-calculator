@@ -16,21 +16,59 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+*** Ask for admin credentials  ***
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+# Currency Calculator Application
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Overview
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The Currency Calculator application consists of two main components:
+1. **REST API**: Built using Node.js to handle currency conversion, manage exchange rates, and perform CRUD operations. Includes authentication for protected endpoints.
 
-## Deploy on Vercel
+2. **Graphical User Interface (GUI)**: Developed using React Js allowing users to interact with the API for currency conversion, adding/updating exchange rates, and managing currencies.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Features
+
+### API
+- **Currency Conversion**: Convert a specific amount from a base currency to a target currency.
+- **CRUD Operations**: Add, read, update, and delete currencies and their exchange rates dynamically.
+- **Authentication and Authorization**: Secured endpoints (with CRUD operations) with a simple login mechanism and NEXT_PUBLIC_ADMIN_PASSWORD_HASH, bcrypt, JSON Web Tokens (JWT).
+
+
+### GUI
+- **Conversion Tool**: Simple interface to select base/target currencies, input amounts, and view conversion results.
+- **Currency Management**: Add or update currencies and their rates using forms.
+- **Authentication**: Log in to access protected API features like managing currencies.
+- **Dynamic Updates**: Leverages API endpoints to fetch and update live data.
+
+---
+
+## Tech Stack
+
+### Backend
+- **Node.js** with Express.js (or PHP Symfony)
+- **Database**: SQLite (for storing users and exchange rates)
+- **Authentication**: JSON Web Tokens (JWT)
+- **Environment Variables**: `dotenv` for managing secrets like `JWT_SECRET`.
+
+### Frontend
+- **React** 
+- **Styling**: Tailwind CSS/
+- **State Management**: React's `useState`/`useEffect` 
+- **API Communication**: Fetch API
+
+---
+
+## Installation and Setup
+
+### Backend Setup
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   cd currency-calculator-api
+
+
