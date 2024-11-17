@@ -13,12 +13,14 @@
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.1.5",
+    "@types/react-world-flags": "^1.6.0",
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
     "next": "15.0.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-world-flags": "^1.6.0",
     "sequelize": "^6.37.5",
     "sqlite3": "^5.1.7"
   },
