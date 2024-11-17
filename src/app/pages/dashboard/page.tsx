@@ -22,6 +22,17 @@ export default function DashboardPage() {
   const router = useRouter();       // Next.js router instance for navigation
 
 
+  // JWT token
+  useEffect(() => {
+    const token = localStorage.getItem("authToken");
+    
+    if (!token) {
+      // Redirect to login page if no token is found
+      router.push("/pages/login");
+    }
+  }, [router]); // This effect runs once after the component mounts
+
+
 
   // Fetch rates from the backend on component mount
   useEffect(() => {
@@ -78,6 +89,15 @@ export default function DashboardPage() {
       alert("Failed to update the rate.");             // Show error to the user
     }
   };
+
+  //  checks if the token exists in localStorage
+
+  const token = localStorage.getItem("authToken");
+    if (!token) {
+      // Redirect to login page if no token is found
+      router.push("/pages/login"); // Only navigate if the user is not authenticated
+      return; // Stop further execution to avoid loading the rest of the page
+    }
 
 
 
@@ -159,8 +179,13 @@ export default function DashboardPage() {
   
   // Handle logout
   const handleLogout = () => {
-    alert("Logged out!");          // Notify user
-    router.push("/pages/login"); // Redirect to login page
+    // Remove the token from localStorage when the user logs out
+    localStorage.removeItem("authToken");
+  
+    // Redirect to the login page
+    router.push("/pages/login");
+  
+    alert("Logged out!");
   };
 
 

@@ -53,15 +53,16 @@ export default function LoginPage() {
       return;
     }
 
-    // Simulate login logic with the hashed password
+        // Simulate login logic with the hashed password
     if (email === adminCredentials.email) {
       const isPasswordValid = bcrypt.compareSync(password, adminCredentials.passwordHash);
 
       if (isPasswordValid) {
         console.log("Login successful! Redirecting to dashboard...");
         
-        // Store login state in localStorage
-        localStorage.setItem("isLoggedIn", "true");
+        // Store a valid JWT token in localStorage after successful login
+        const token = "yxTKA4Cthn0WUC4fsdyQzqTwZPrHbR8TQop4pgszziM=";  // Replace this with an actual JWT token, if you are getting it from the backend
+        localStorage.setItem("authToken", token);  // Save the token with the key "authToken"
 
         // Redirect to the dashboard page
         router.push('/pages/dashboard');
@@ -71,7 +72,7 @@ export default function LoginPage() {
     } else {
       setErrors({ email: "Invalid email or password" });
     }
-  };
+      };
 
   return (
     <>
