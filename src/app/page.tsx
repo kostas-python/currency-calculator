@@ -99,13 +99,23 @@ const CurrencyConverter: React.FC = () => {
   // Handle changes in the amount of currencyOne input field
   const handleAmountOneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value; // Get the value from the input field as a string
-    const numericValue = parseFloat(value);  // Convert it to a number
-
-
-
-    // Set amountOne to the new value, ensuring it's a valid number
-    setAmountOne(isNaN(numericValue) ? 0 : numericValue);
+  
+    // Allow empty input without converting it to a number
+    if (value === "") {
+      setAmountOne(0); // Optional: You could leave the field empty if preferred
+      setAmountTwo(0); // Ensure the dependent amount is also updated
+      return;
+    }
+  
+    // Parse the input value into a number
+    const numericValue = parseFloat(value);
+  
+    if (!isNaN(numericValue)) {
+      setAmountOne(numericValue);
+      setAmountTwo(numericValue * (rate || 1)); // Recalculate amountTwo based on the current rate
+    }
   };
+  
 
 
 
@@ -151,10 +161,10 @@ const CurrencyConverter: React.FC = () => {
               </select>
             </div>
             <input
-              type="number"
               value={amountOne} // Controlled input for amountOne
               onChange={handleAmountOneChange} // Update the amountOne state
               placeholder="Amount in Currency 1"
+              pattern="\d*"
               className="ml-4 border border-gray-300 py-3 rounded w-24 focus:outline-none text-black"
             />
           </div>
