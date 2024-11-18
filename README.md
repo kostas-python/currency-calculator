@@ -50,15 +50,15 @@ The Currency Calculator application consists of two main components:
 ## Tech Stack
 
 ### Backend
-- **Node.js** with Express.js (or PHP Symfony)
-- **Database**: SQLite (for storing users and exchange rates)
+- **Node.js** 
+- **Database**: SQLite3 (for storing users and exchange rates)
 - **Authentication**: JSON Web Tokens (JWT)
 - **Environment Variables**: `dotenv` for managing secrets like `JWT_SECRET`.
 
 
 ### Frontend
 - **React** 
-- **Styling**: Tailwind CSS/
+- **Styling**: Tailwind CSS
 - **State Management**: React's `useState`/`useEffect` 
 - **API Communication**: Fetch API
 
@@ -74,4 +74,5 @@ The Currency Calculator application consists of two main components:
 
 ### Jest testing
 - **jest test**
+- For testing run the command npm test
 
