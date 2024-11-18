@@ -11,8 +11,12 @@ const navigation = [
   { name: 'User login', href: '/pages/login' },
 ]
 
+
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+
+  // Header customisation
 
   return (
     <header className="bg-gray-200">
@@ -22,6 +26,7 @@ export default function Header() {
             <h1>PROCON CURRENCY CALCULATOR</h1>
           </Link>
         </div>
+
         <div className="flex lg:hidden">
           <button
             type="button"
@@ -32,6 +37,7 @@ export default function Header() {
             <Bars3Icon aria-hidden="true" className="size-6" />
           </button>
         </div>
+
         <div className="hidden lg:flex lg:gap-x-12">
           {navigation.map((item) => (
             <a key={item.name} href={item.href} className="text-lg/6 font-semibold text-gray-900">
@@ -39,6 +45,7 @@ export default function Header() {
             </a>
           ))}
         </div>
+        
         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
           <a href="#" className="text-sm/6 font-semibold text-gray-900">
           <span aria-hidden="true"></span>

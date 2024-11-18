@@ -21,6 +21,8 @@ try {
         autoIncrement: true,
         primaryKey: true,
       },
+      
+      // Username section
       username: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -35,6 +37,8 @@ try {
           },
         },
       },
+
+      // password section
       password: {
         type: DataTypes.STRING,
         allowNull: false,
