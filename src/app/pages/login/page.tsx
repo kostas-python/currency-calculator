@@ -20,7 +20,7 @@ export default function LoginPage() {
   // Admin credentials (hashed password for 'password')
   const adminCredentials = {
     email: "admin@example.com",
-    passwordHash: "$2a$12$Teb8wOTF2rL6dDjfFJMRcOM84S0Tco43c2xovlAEqjDm1Jmz2f/3i" // Hashed password for "proconadmin13"
+    passwordHash: "$2a$12$Teb8wOTF2rL6dDjfFJMRcOM84S0Tco43c2xovlAEqjDm1Jmz2f/3i" 
   };
 
   // Handle form submission
