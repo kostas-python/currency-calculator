@@ -21,7 +21,7 @@ export default function LoginPage() {
   // Admin credentials (hashed password for 'password')
   const adminCredentials = {
     email: process.env.NEXT_PUBLIC_ADMIN_EMAIL ?? '', 
-    passwordHash: '',
+    passwordHash: "$2a$12$fGNaerNxxk2CvneNAitmNumXCIHaowckFULABCLQeIXFiPuz0ERja"
   };
 
   // Handle form submission
