@@ -225,6 +225,7 @@ export default function DashboardPage() {
                   <td className="border px-4 py-2">
                     {editIndex === index ? (
                       <>
+                      <div className="space-x-2">
                         <button
                           onClick={handleUpdate}
                           className="bg-green-500 text-white px-2 py-1 rounded"
@@ -238,6 +239,7 @@ export default function DashboardPage() {
                         >
                           Cancel
                         </button>
+                        </div>
                       </>
                     ) : (
                       <>
