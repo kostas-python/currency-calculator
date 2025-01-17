@@ -1,11 +1,6 @@
-<<<<<<<< HEAD:src/app/database/seed/index.ts
-import { sequelize } from "../data";
-import Currency from "@/app/models/currency";
-========
 
 import Currency from "@/models/currency";
-import { sequelize } from "./data";
->>>>>>>> 131758f8288e8363f77159de0c647c00a013f411:src/app/database/seed.ts
+import { sequelize } from "../data";
 
 // Remove the initialCurrencyRates array since it's no longer needed
 

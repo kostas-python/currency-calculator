@@ -1,15 +1,8 @@
 
 import dotenv from 'dotenv';
-<<<<<<<< HEAD:src/app/database/data/index.ts
-import User from '@/app/models/user';
-import Currency from '@/app/models/currency';
-import { seedCurrencies } from '@/app/database/seed';  // Import the seed function
-========
-import { seedCurrencies } from '@/app/database/seed';  // Import the seed function
 import { Sequelize } from 'sequelize';
 import User from '@/models/user';
 import Currency from '@/models/currency';
->>>>>>>> 131758f8288e8363f77159de0c647c00a013f411:src/app/database/data.ts
 
 dotenv.config();
 
@@ -39,4 +32,8 @@ initializeDatabase();
 
 // Export Sequelize instance and models for use in other files
 export { sequelize, User, Currency };
+
+  function seedCurrencies() {
+    throw new Error('Function not implemented.');
+  }
 
