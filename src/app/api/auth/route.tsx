@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 */}
 
 // Login and return a JWT
-export async function POST_LOGIN(req: Request) {
+export async function Post(req: Request) {
 
   // Extract username and password from the request body
   const { username, password } = await req.json();
