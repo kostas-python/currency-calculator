@@ -1,8 +1,9 @@
-import { Sequelize } from 'sequelize';
+
 import dotenv from 'dotenv';
-import User from '@/app/models/user/page';
-import Currency from '@/app/models/currency/page';
-import { seedCurrencies } from '@/app/database/seed/page';  // Import the seed function
+import { seedCurrencies } from '@/app/database/seed';  // Import the seed function
+import { Sequelize } from 'sequelize';
+import User from '@/models/user';
+import Currency from '@/models/currency';
 
 dotenv.config();
 

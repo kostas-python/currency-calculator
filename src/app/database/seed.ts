@@ -1,5 +1,6 @@
-import { sequelize } from "../data/page";
-import Currency from "@/app/models/currency/page";
+
+import Currency from "@/models/currency";
+import { sequelize } from "./data";
 
 // Remove the initialCurrencyRates array since it's no longer needed
 
@@ -18,5 +19,3 @@ export async function seedCurrencies() {
     console.error('Error during database initialization:', error);
   }
 }
-
-seedCurrencies();
