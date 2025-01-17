@@ -5,28 +5,25 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
-
 // navigation menu
 const navigation = [
   { name: 'User login', href: '/pages/login' },
 ]
 
-
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-
-  // Header customisation
-
   return (
-    <header className="bg-gray-200">
+    <header className="bg-gray-900">
       <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
-        <div className="text-black font-bold flex lg:flex-1">
+        {/* Container for the logo, centered */}
+        <div className="flex flex-1 justify-center">
           <Link href="/" className="-m-1.5 p-1.5">
-            <h1>TECH4SOLUTIONS CURRENCY CALCULATOR</h1>
+            <h1 className="text-center  text-xl font-bold">TECH4SOLUTIONS CURRENCY CALCULATOR</h1>
           </Link>
         </div>
 
+        {/* Mobile menu toggle */}
         <div className="flex lg:hidden">
           <button
             type="button"
@@ -38,30 +35,17 @@ export default function Header() {
           </button>
         </div>
 
-        <div className="hidden lg:flex lg:gap-x-12">
-          {navigation.map((item) => (
-            <a key={item.name} href={item.href} className="text-lg/6 font-semibold text-gray-900">
-              {item.name}
-            </a>
-          ))}
-        </div>
+        {/* Right-aligned content for larger screens */}
         
-        <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-          <a href="#" className="text-sm/6 font-semibold text-gray-900">
-          <span aria-hidden="true"></span>
-          </a>
-        </div>
       </nav>
 
-      {/* mobile menu */}
-      
+      {/* Mobile menu */}
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-10" />
         <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>
-              
             </a>
             <button
               type="button"
