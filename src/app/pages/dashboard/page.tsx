@@ -241,6 +241,7 @@ export default function DashboardPage() {
                       </>
                     ) : (
                       <>
+                      <div className="space-x-2">
                         <button
                           onClick={() => handleEdit(index)}
                           className="bg-blue-500 text-white px-2 py-1 rounded"
@@ -254,6 +255,7 @@ export default function DashboardPage() {
                         >
                           Delete
                         </button>
+                        </div>
                       </>
                     )}
                   </td>
