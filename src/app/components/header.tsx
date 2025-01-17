@@ -5,10 +5,7 @@ import { Dialog, DialogPanel } from '@headlessui/react'
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline'
 import Link from 'next/link'
 
-// navigation menu
-const navigation = [
-  { name: 'User login', href: '/pages/login' },
-]
+
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -40,39 +37,46 @@ export default function Header() {
       </nav>
 
       {/* Mobile menu */}
-      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
-        <div className="fixed inset-0 z-10" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-          <div className="flex items-center justify-between">
-            <a href="#" className="-m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
-            </a>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              className="-m-2.5 rounded-md p-2.5 text-gray-700"
-            >
-              <span className="sr-only">Close menu</span>
-              <XMarkIcon aria-hidden="true" className="size-6" />
-            </button>
-          </div>
-          <div className="mt-6 flow-root">
-            <div className="-my-6 divide-y divide-gray-500/10">
-              <div className="space-y-2 py-6">
-                {navigation.map((item) => (
-                  <a
-                    key={item.name}
-                    href={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50"
-                  >
-                    {item.name}
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-        </DialogPanel>
-      </Dialog>
+{/* Mobile menu */}
+{/* Mobile menu */}
+<Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
+  <div className="fixed inset-0 z-10" />
+  <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-gray-900 px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+    <div className="flex flex-col justify-center items-center space-y-6 h-full"> {/* Full-height flex container for vertical centering */}
+      <Link href="/" className="p-1.5">
+        <h1 className="text-center text-xl font-bold text-white">
+          TECH4SOLUTIONS CURRENCY CALCULATOR
+        </h1>
+      </Link>
+
+      {/* Close Button */}
+      <button
+        type="button"
+        onClick={() => setMobileMenuOpen(false)}
+        className="-m-2.5 rounded-md p-2.5 text-gray-100"
+      >
+        <span className="sr-only">Close menu</span>
+        <XMarkIcon aria-hidden="true" className="size-6" />
+      </button>
+
+      {/* Login Button */}
+      <div className="flex justify-center items-center mt-6"> {/* Ensure flexbox layout to center */}
+        <Link 
+          href='/pages/login' 
+          className="inline-block px-5 py-3 overflow-hidden font-bold rounded-full group relative"
+        >
+          <span className="w-32 h-32 rotate-45 translate-x-12 -translate-y-2 absolute left-0 top-0 bg-white opacity-[3%]"></span>
+          <span className="absolute top-0 left-0 w-48 h-48 -mt-1 transition-all duration-500 ease-in-out rotate-45 -translate-x-56 -translate-y-24 bg-white opacity-100 group-hover:-translate-x-8"></span>
+          <span className="relative w-full text-left text-white transition-colors duration-200 ease-in-out group-hover:text-gray-900">User login</span>
+          <span className="absolute inset-0 border-2 border-white rounded-full"></span>
+        </Link>
+      </div>
+    </div>
+  </DialogPanel>
+</Dialog>
+
+
+
     </header>
   )
 }
