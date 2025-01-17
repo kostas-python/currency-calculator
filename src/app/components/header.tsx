@@ -23,7 +23,7 @@ export default function Header() {
       <nav aria-label="Global" className="flex items-center justify-between p-6 lg:px-8">
         <div className="text-black font-bold flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
-            <h1>PROCON CURRENCY CALCULATOR</h1>
+            <h1>TECH4SOLUTIONS CURRENCY CALCULATOR</h1>
           </Link>
         </div>
 
