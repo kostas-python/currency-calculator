@@ -1,193 +1,125 @@
 "use client";
 
-import Header from "@/app/components/header"; 
-import { useRouter } from "next/navigation";     // Router for navigation
-import { useEffect, useState } from "react";    // React hooks for state management and side effects
-
-
+import Header from "@/app/components/header";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function DashboardPage() {
-  // State to store exchange rates (array of objects with pair and rate)
   const [rates, setRates] = useState<{ pair: string; rate: number }[]>([]);
-
-
-  // State for handling editing a rate (stores index of the rate being edited)
   const [editIndex, setEditIndex] = useState<number | null>(null);
-
-
-  // State for new rate and pair input fields
   const [newRate, setNewRate] = useState("");
   const [newPair, setNewPair] = useState("");
 
-  const router = useRouter();       // Next.js router instance for navigation
+  const router = useRouter();
 
-
-  // JWT token
+  // Check authentication token on component mount
   useEffect(() => {
     const token = localStorage.getItem("authToken");
-    
     if (!token) {
-      // Redirect to login page if no token is found
       router.push("/pages/login");
     }
-  }, [router]); // This effect runs once after the component mounts
+  }, [router]);
 
-
-
-  // Fetch rates from the backend on component mount
+  // Fetch rates from the backend
   useEffect(() => {
     const fetchRates = async () => {
       try {
-        const response = await fetch("/api/convert", { method: "GET" }); // Make a GET request to the backend
-        if (!response.ok) {
-          throw new Error("Failed to fetch rates");
-        }
-        const data: { pair: string; rate: number }[] = await response.json(); // Parse response
-        setRates(data);            // Update rates state with fetched data
+        const response = await fetch("/api/convert", { method: "GET" });
+        if (!response.ok) throw new Error("Failed to fetch rates");
+        const data: { pair: string; rate: number }[] = await response.json();
+        setRates(data);
       } catch (error) {
-        console.error("Error fetching rates:", error); // Log errors
+        console.error("Error fetching rates:", error);
       }
     };
 
-    fetchRates();          // Trigger fetch on component load
-  }, []);                 // Empty dependency array ensures this runs only once
+    fetchRates();
+  }, []);
 
-
-
-  // Handle edit button click
-  const handleEdit = (index: number) => {
-    setEditIndex(index);                         // Set the index of the rate being edited
-    setNewRate(rates[index].rate.toString());   // Prefill the input with the existing rate
-  };
-
-
-
-  // Handle update when saving an edited rate
-  const handleUpdate = async () => {
-    if (editIndex === null) return;      // Do nothing if no rate is being edited
-
-    try {
-      const updatedRateData = { pair: rates[editIndex].pair, rate: parseFloat(newRate) }; // Prepare updated rate
-
-      const response = await fetch("/api/convert", {
-        method: "PUT", // PUT request to update the rate
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedRateData), // Send updated rate as JSON
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update the rate");
-      }
-
-      // Fetch updated rates from backend to reflect changes
-      const updatedRates = await fetchRatesFromBackend();
-      setRates(updatedRates);                      // Update local state with the latest data
-      setEditIndex(null);                         // Clear editing state
-      setNewRate("");                            // Clear input field
-    } catch (error) {
-      console.error("Error updating rate:", error);     // Log errors
-      alert("Failed to update the rate.");             // Show error to the user
-    }
-  };
-
-  //  checks if the token exists in localStorage
-
-  const token = localStorage.getItem("authToken");
-    if (!token) {
-      // Redirect to login page if no token is found
-      router.push("/pages/login"); // Only navigate if the user is not authenticated
-      return; // Stop further execution to avoid loading the rest of the page
-    }
-
-
-
-  // Fetch updated rates from the backend
   const fetchRatesFromBackend = async () => {
     try {
       const response = await fetch("/api/convert", { method: "GET" });
-      if (!response.ok) {
-        throw new Error("Failed to fetch rates");
-      }
-      return await response.json();          // Return the fetched rates
+      if (!response.ok) throw new Error("Failed to fetch rates");
+      return await response.json();
     } catch (error) {
       console.error("Error fetching rates from backend:", error);
-      return rates;                       // Return current rates as fallback
+      return rates;
     }
   };
 
-
-
-  // Cancel editing a rate
-  const handleCancel = () => {
-    setEditIndex(null); // Reset editing state
-    setNewRate(""); // Clear input field
+  const handleEdit = (index: number) => {
+    setEditIndex(index);
+    setNewRate(rates[index].rate.toString());
   };
 
+  const handleUpdate = async () => {
+    if (editIndex === null) return;
 
+    try {
+      const updatedRateData = { pair: rates[editIndex].pair, rate: parseFloat(newRate) };
+      const response = await fetch("/api/convert", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedRateData),
+      });
+      if (!response.ok) throw new Error("Failed to update the rate");
 
-  // Handle deletion of a rate
+      const updatedRates = await fetchRatesFromBackend();
+      setRates(updatedRates);
+      setEditIndex(null);
+      setNewRate("");
+    } catch (error) {
+      console.error("Error updating rate:", error);
+      alert("Failed to update the rate.");
+    }
+  };
+
+  const handleCancel = () => {
+    setEditIndex(null);
+    setNewRate("");
+  };
+
   const handleDelete = async (index: number) => {
     try {
-      const pairToDelete = rates[index].pair;        // Get the pair to delete
+      const pairToDelete = rates[index].pair;
+      const response = await fetch(`/api/convert?pair=${pairToDelete}`, { method: "DELETE" });
+      if (!response.ok) throw new Error("Failed to delete rate");
 
-      const response = await fetch(`/api/convert?pair=${pairToDelete}`, { method: "DELETE" }); // DELETE request
-
-      if (!response.ok) {
-        throw new Error("Failed to delete rate");
-      }
-
-      // Fetch updated rates after deletion
       const updatedRates = await fetchRatesFromBackend();
-      setRates(updatedRates); // Update local state
+      setRates(updatedRates);
     } catch (error) {
-      console.error("Error deleting rate:", error);            // Log errors
-      alert("Failed to delete rate.");                        // Show error to the user
+      console.error("Error deleting rate:", error);
+      alert("Failed to delete rate.");
     }
   };
 
-
-
-  // Handle adding a new rate
   const handleAdd = async () => {
     if (newPair && newRate) {
       try {
-        const newRateData = { pair: newPair.toUpperCase(), rate: parseFloat(newRate) }; // Prepare new rate
-
+        const newRateData = { pair: newPair.toUpperCase(), rate: parseFloat(newRate) };
         const response = await fetch("/api/convert", {
-          method: "POST",                                 // POST request to add the rate
+          method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newRateData),             // Send new rate as JSON
+          body: JSON.stringify(newRateData),
         });
+        if (!response.ok) throw new Error("Failed to add new rate");
 
-        if (!response.ok) {
-          throw new Error("Failed to add new rate");
-        }
-
-        // Fetch updated rates after adding the new rate
         const updatedRates = await fetchRatesFromBackend();
-        setRates(updatedRates);                             // Update local state
-        setNewPair("");                                    // Clear input field
-        setNewRate("");                                   // Clear input field
+        setRates(updatedRates);
+        setNewPair("");
+        setNewRate("");
       } catch (error) {
-        console.error("Error adding new rate:", error);    // Log errors
-        alert("Failed to add new rate.");                 // Show error to the user
+        console.error("Error adding new rate:", error);
+        alert("Failed to add new rate.");
       }
     }
   };
 
-
-  
-  // Handle logout
   const handleLogout = () => {
-    // Remove the token from localStorage when the user logs out
     localStorage.removeItem("authToken");
-  
-    // Redirect to the login page
     router.push("/pages/login");
-  
     alert("Logged out!");
   };
-
 
 
   return (

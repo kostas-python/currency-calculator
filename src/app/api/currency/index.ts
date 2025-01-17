@@ -1,4 +1,4 @@
-import Currency from '@/app/models/currency/page';
+import Currency from '@/app/models/currency';
 import { NextResponse } from 'next/server';
 
 

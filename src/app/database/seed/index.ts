@@ -1,5 +1,5 @@
-import { sequelize } from "../data/page";
-import Currency from "@/app/models/currency/page";
+import { sequelize } from "../data";
+import Currency from "@/app/models/currency";
 
 // Remove the initialCurrencyRates array since it's no longer needed
 
