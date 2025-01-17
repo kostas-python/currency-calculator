@@ -2,7 +2,7 @@
 
 import Flag from "react-world-flags";
 import Header from "./components/header";
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Link from "next/link";
 
 
@@ -33,13 +33,13 @@ const CurrencyConverter: React.FC = () => {
   const [rate, setRate] = useState<number | null>(0.84);           // Default to 0.84 as the exchange rate
 
   // Function to fetch the exchange rate from the API
-  const fetchRate = async () => {
+  const fetchRate = useCallback(async () => {
     try {
       // If currencies are the same, directly set rate to 1
       if (currencyOne === currencyTwo) {
         setRate(1);
-        setAmountTwo(amountOne);  // Set amountTwo to the same value as amountOne
-        return;  // No need to fetch from the API
+        setAmountTwo(amountOne); // Set amountTwo to the same value as amountOne
+        return; // No need to fetch from the API
       }
 
       // Fetch conversion rate from the API endpoint
@@ -55,80 +55,62 @@ const CurrencyConverter: React.FC = () => {
 
       if (data?.rate) {
         setRate(data.rate);
-        setAmountTwo(amountOne * data.rate);
-
-        // Calculate the amount in currencyTwo based on amountOne and the rate
-        const calculatedAmount = amountOne * data.rate;
-
-        // Set the calculated amount for currencyTwo, ensuring it's not NaN
-        setAmountTwo(isNaN(calculatedAmount) ? 0 : calculatedAmount);
+        setAmountTwo(amountOne * data.rate); // Calculate the amount in currencyTwo based on amountOne and the rate
       } else {
         console.error("Rate data is missing or invalid", data);
       }
     } catch (error) {
       console.error("Failed to fetch the conversion rate:", error);
     }
-  };
-
-
+  }, [currencyOne, currencyTwo, amountOne]);
 
   // Trigger fetching of the conversion rate whenever currencyOne, currencyTwo, or amountOne changes
   useEffect(() => {
     fetchRate();
-  }, [currencyOne, currencyTwo, amountOne]);
-
-
+  }, [currencyOne, currencyTwo, amountOne, fetchRate]);
 
   // Reset amountOne to 1 whenever currencyOne or currencyTwo changes
   useEffect(() => {
-    setAmountOne(1);  // Reset amount to 1 when currencies are swapped
+    setAmountOne(1); // Reset amount to 1 when currencies are swapped
   }, [currencyOne, currencyTwo]);
-
-
 
   // Swap the selected currencies and update amounts and rates accordingly
   const handleSwap = () => {
-    setCurrencyOne(currencyTwo);                          // Set currencyOne to currencyTwo
-    setCurrencyTwo(currencyOne);                          // Set currencyTwo to currencyOne
-    setAmountOne(amountTwo);                               // Set amountOne to the current value of amountTwo
-    setAmountTwo(amountOne);                               // Set amountTwo to the current value of amountOne
+    setCurrencyOne(currencyTwo); // Set currencyOne to currencyTwo
+    setCurrencyTwo(currencyOne); // Set currencyTwo to currencyOne
+    setAmountOne(amountTwo); // Set amountOne to the current value of amountTwo
+    setAmountTwo(amountOne); // Set amountTwo to the current value of amountOne
     setRate((prevRate) => (prevRate ? 1 / prevRate : null)); // Invert the rate safely
   };
-
-
 
   // Handle changes in the amount of currencyOne input field
   const handleAmountOneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value; // Get the value from the input field as a string
-  
+
     // Allow empty input without converting it to a number
     if (value === "") {
       setAmountOne(0); // Optional: You could leave the field empty if preferred
       setAmountTwo(0); // Ensure the dependent amount is also updated
       return;
     }
-  
+
     // Parse the input value into a number
     const numericValue = parseFloat(value);
-  
+
     if (!isNaN(numericValue)) {
       setAmountOne(numericValue);
       setAmountTwo(numericValue * (rate || 1)); // Recalculate amountTwo based on the current rate
     }
   };
-  
-
-
 
   // Handle changes in the amount of currencyTwo input field
   const handleAmountTwoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value; // Get the value from the input field as a string
-    const numericValue = parseFloat(value);  // Convert it to a number
+    const numericValue = parseFloat(value); // Convert it to a number
 
     // Set amountTwo to the new value, ensuring it's a valid number
     setAmountTwo(isNaN(numericValue) ? 0 : numericValue);
   };
-
 
 
 
