@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import bcrypt from 'bcryptjs'; 
 import Header from "@/app/components/header";
+import Link from 'next/link';
 
 
 export default function LoginPage() {
@@ -78,84 +79,98 @@ export default function LoginPage() {
     <>
       <Header />
 
-      <div className="flex min-h-full h-screen bg-gradient-to-b from-gray-100 via-gray-200 to-gray-500 flex-1 flex-col justify-top px-6 py-12 lg:px-8">
-        <div className="mt-60 sm:mx-auto sm:w-full sm:max-w-sm">
-          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-gray-900">
-            Sign in to your account
-          </h2>
-        </div>
+      <div className="flex min-h-full h-screen bg-gradient-to-b from-gray-100 via-gray-200 to-gray-500 flex-col justify-center items-center px-6 py-12 lg:px-8">
+  
+  {/* Link button centered horizontally and positioned at the top */}
+  <Link 
+    href='/' 
+    className="absolute top-24 left-1/2 transform -translate-x-1/2 items-center inline-block px-5 py-3 overflow-hidden font-bold rounded-full group"
+  >
+    <span className="w-32 h-32 rotate-45 translate-x-12 -translate-y-2 absolute left-0 top-0 bg-black opacity-[3%]"></span>
+    <span className="absolute top-0 left-0 w-48 h-48 -mt-1 transition-all duration-500 ease-in-out rotate-45 -translate-x-56 -translate-y-24 bg-gray-700 opacity-100 group-hover:-translate-x-8"></span>
+    <span className="relative w-full text-left text-black transition-colors duration-200 ease-in-out group-hover:text-white">Go Back</span>
+    <span className="absolute inset-0 border-2 border-black rounded-full"></span>     
+  </Link>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            
-            {/* Email input */}
-            <div>
-              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
-                Email address
-              </label>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                  className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 ${
-                    errors.email ? 'ring-red-500' : ''
-                  }`}
-                />
+  {/* Form content */}
+  <div className=" sm:mx-auto sm:w-full sm:max-w-sm">
+    <h2 className="text-center text-2xl/9 font-bold tracking-tight text-gray-900">
+      Sign in to your account
+    </h2>
+  </div>
 
-                {/* Display error message if validation fails */}
-                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
-              </div>
-            </div>
+  <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+    {/* Form */}
+    <form onSubmit={handleSubmit} className="space-y-6">
+      
+      {/* Email input */}
+      <div>
+        <label htmlFor="email" className="block text-sm/6 font-medium text-gray-900">
+          Email address
+        </label>
+        <div className="mt-2">
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            autoComplete="email"
+            className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 ${
+              errors.email ? 'ring-red-500' : ''
+            }`}
+          />
 
-            {/* Password input */}
-            <div>
-              <div className="flex items-center justify-between">
-                <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
-                  Password
-                </label>
-                <div className="text-sm">
-                  <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
-                    Forgot password?
-                  </a>
-                </div>
-              </div>
-              <div className="mt-2">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  autoComplete="current-password"
-                  className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 ${
-                    errors.password ? 'ring-red-500' : ''
-                  }`}
-                />
-                
-                {/* Display error message if validation fails */}
-                {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
-              </div>
-            </div>
-
-            {/* Submit button */}
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Sign in
-              </button>
-            </div>
-          </form>
+          {/* Display error message if validation fails */}
+          {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
         </div>
       </div>
+
+      {/* Password input */}
+      <div>
+        <div className="flex items-center justify-between">
+          <label htmlFor="password" className="block text-sm/6 font-medium text-gray-900">
+            Password
+          </label>
+          <div className="text-sm">
+            <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">
+              Forgot password?
+            </a>
+          </div>
+        </div>
+        <div className="mt-2">
+          <input
+            id="password"
+            name="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            autoComplete="current-password"
+            className={`block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm/6 ${
+              errors.password ? 'ring-red-500' : ''
+            }`}
+          />
+          
+          {/* Display error message if validation fails */}
+          {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+        </div>
+      </div>
+
+      {/* Submit button */}
+      <div>
+        <button
+          type="submit"
+          className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Sign in
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
     </>
   );
 }
